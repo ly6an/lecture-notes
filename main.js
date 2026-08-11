@@ -4,14 +4,24 @@ const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
 function createWindow() {
+
     console.log("Creating window...");
-    
+
     const window = new BrowserWindow({
         width: 1200,
-        height: 800
+        height: 800,
+
+        webPreferences: {
+            contextIsolation: true,
+            nodeIntegration: false
+        }
     });
 
-    const indexPath = path.join(__dirname, "src", "index.html");
+    const indexPath = path.join(
+        __dirname,
+        "src",
+        "index.html"
+    );
 
     console.log("Loading:", indexPath);
 
@@ -19,5 +29,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+
     createWindow();
+
 });

@@ -1,32 +1,23 @@
-const codeInput = document.getElementById("codeInput");
-const languageSelect = document.getElementById("language");
-const generateButton = document.getElementById("generate");
-const preview = document.getElementById("preview");
+import { EditorView, basicSetup } from "codemirror";
+import { EditorState } from "@codemirror/state";
+import { javascript } from "@codemirror/lang-javascript";
 
+const editorElement = document.getElementById("editor");
 
-generateButton.addEventListener("click", () => {
+const startState = EditorState.create({
+    doc: `function hello(name) {
+    console.log("Hello " + name);
+}
 
-    const code = codeInput.value;
+hello("Lecture");`,
 
-    const language = languageSelect.value;
-
-    console.log("Code:", code);
-
-    console.log("Language:", language);
-
-    preview.innerHTML = `
-        <pre>${escapeHtml(code)}</pre>
-    `;
-
+    extensions: [
+        basicSetup,
+        javascript()
+    ]
 });
 
-
-function escapeHtml(text) {
-
-    return text
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+new EditorView({
+    state: startState,
+    parent: editorElement
+});
