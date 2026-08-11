@@ -1,25 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>LectureCode</title>
-
     <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
+    <header class="app-header">
+        <div>
+            <h1>LectureCode</h1>
+            <p>Turn lecture code into clean, annotatable images.</p>
+        </div>
 
-    <h1>LectureCode</h1>
+        <button id="generateButton" class="primary-button">
+            Generate Preview
+        </button>
+    </header>
 
-    <p>Vite is working!</p>
+    <main class="workspace">
+        <!-- Editor panel -->
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Code Editor</h2>
+                    <span>Write, paste, or scan code</span>
+                </div>
 
-    <div id="editor"></div>
+            <div class="editor-actions">
+                <button id="scanButton" class="secondary-button">
+                    Scan Screenshot
+                </button>
+
+            <input
+                id="imageInput"
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                hidden
+            >
+
+            <select id="languageSelect" aria-label="Language">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="java">Java</option>
+                <option value="cpp">C++</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="sql">SQL</option>
+            </select>
+    </div>
+</div>
+
+            <div id="editor"></div>
+        </section>
+
+        <!-- Preview panel -->
+        <section class="panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Preview</h2>
+                    <span id="previewStatus">Ready to generate</span>
+                </div>
+
+                <div class="preview-actions">
+                    <button
+                        id="copyButton"
+                        class="secondary-button"
+                    >
+                        Copy Image
+                    </button>
+
+                    <button
+                        id="downloadButton"
+                        class="secondary-button"
+                    >
+                        Download PNG
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-area">
+                <div id="codeCard" class="code-card">
+                    <div class="code-card-header">
+                        <div class="window-buttons">
+                            <span class="red"></span>
+                            <span class="yellow"></span>
+                            <span class="green"></span>
+                        </div>
+
+                        <span id="languageLabel">JavaScript</span>
+                    </div>
+
+                    <pre><code id="previewCode"></code></pre>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <script type="module" src="./renderer.js"></script>
-
 </body>
-
 </html>

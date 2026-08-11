@@ -1,23 +1,283 @@
+* {
+    box-sizing: border-box;
+}
+
+:root {
+    font-family:
+        Inter, Arial, Helvetica, sans-serif;
+    color: #e7eaf0;
+    background: #111318;
+}
+
 body {
+    min-height: 100vh;
     margin: 0;
-    padding: 30px;
-
-    font-family: Arial, sans-serif;
-
-    background: white;
+    padding: 28px;
+    background:
+        radial-gradient(circle at top left, #202943, transparent 35%),
+        #111318;
 }
 
-h1 {
-    font-size: 32px;
+button,
+select {
+    font: inherit;
 }
 
-p {
-    font-size: 18px;
+.app-header {
+    max-width: 1500px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.app-header h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+}
+
+.app-header p {
+    margin: 0;
+    color: #9299a8;
+}
+
+.primary-button {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 18px;
+    color: white;
+    background: #5865f2;
+    cursor: pointer;
+    font-weight: 700;
+    transition:
+        background 0.2s,
+        transform 0.2s;
+}
+
+.primary-button:hover {
+    background: #6874ff;
+    transform: translateY(-1px);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+.workspace {
+    width: 100%;
+    max-width: 1500px;
+    min-height: 680px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 20px;
+}
+
+.panel {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #303541;
+    border-radius: 14px;
+    background: #191c23;
+    box-shadow: 0 18px 45px rgb(0 0 0 / 25%);
+}
+
+.panel-header {
+    min-height: 76px;
+    padding: 16px 18px;
+    border-bottom: 1px solid #303541;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.panel-header h2 {
+    margin: 0 0 5px;
+    font-size: 16px;
+}
+
+.panel-header span {
+    color: #89909f;
+    font-size: 13px;
+}
+
+select {
+    padding: 9px 34px 9px 12px;
+    border: 1px solid #3b414e;
+    border-radius: 8px;
+    color: #e7eaf0;
+    background: #242832;
+    outline: none;
+}
+
+select:focus {
+    border-color: #6874ff;
 }
 
 #editor {
-    width: 800px;
-    height: 500px;
+    height: 604px;
+    overflow: auto;
+    background: #0f1117;
+}
 
-    border: 1px solid #ccc;
+#editor .cm-editor {
+    height: 100%;
+}
+
+#editor .cm-scroller {
+    overflow: auto;
+}
+
+.preview-area {
+    height: 604px;
+    padding: 30px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: auto;
+    background:
+        linear-gradient(45deg, #1d2028 25%, transparent 25%),
+        linear-gradient(-45deg, #1d2028 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #1d2028 75%),
+        linear-gradient(-45deg, transparent 75%, #1d2028 75%);
+    background-size: 24px 24px;
+    background-position:
+        0 0,
+        0 12px,
+        12px -12px,
+        -12px 0;
+}
+
+.code-card {
+    width: 100%;
+    min-height: 260px;
+    overflow: hidden;
+    border: 1px solid #343946;
+    border-radius: 0px;
+    color: #e6edf3;
+    background: #0d1117;
+    box-shadow: 0 22px 50px rgb(0 0 0 / 38%);
+}
+
+.code-card-header {
+    height: 48px;
+    padding: 0 17px;
+    border-bottom: 1px solid #252a34;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #8b949e;
+    font-size: 13px;
+}
+
+.window-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.window-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.red {
+    background: #ff5f57;
+}
+
+.yellow {
+    background: #febc2e;
+}
+
+.green {
+    background: #28c840;
+}
+
+pre {
+    margin: 0;
+    padding: 24px;
+    overflow: auto;
+}
+
+code {
+    font-family: "Cascadia Code", Consolas, monospace;
+    font-size: 15px;
+    line-height: 1.65;
+    white-space: pre;
+}
+
+@media (max-width: 900px) {
+    body {
+        padding: 16px;
+    }
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .app-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    #editor,
+    .preview-area {
+        height: 500px;
+    }
+}
+
+#previewCode {
+    line-height: 1.35;
+}
+
+#previewCode .line {
+    display: block;
+    min-height: 0;
+    line-height: 1.35;
+}
+
+.preview-line-number {
+    display: inline-block;
+    width: 3ch;
+    margin-right: 20px;
+    color: #596273;
+    text-align: right;
+    line-height: inherit;
+    user-select: none;
+}
+
+
+.preview-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.secondary-button {
+    padding: 9px 12px;
+    border: 1px solid #3b414e;
+    border-radius: 8px;
+    color: #e7eaf0;
+    background: #242832;
+    cursor: pointer;
+    transition:
+        border-color 0.2s,
+        background 0.2s;
+}
+
+.secondary-button:hover {
+    border-color: #6874ff;
+    background: #2d3240;
+}
+
+.secondary-button:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.editor-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
