@@ -3,3 +3,9 @@ node_modules/
 dist/
 release/
 *.log
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.json
