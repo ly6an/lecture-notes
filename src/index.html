@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LectureCode</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Top bar -->
+    <header class="topbar">
+
+        <div class="logo">
+            LectureCode
+        </div>
+
+        <div class="controls">
+
+            <select id="language">
+                <option value="javascript">JavaScript</option>
+                <option value="java">Java</option>
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="c">C</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="sql">SQL</option>
+            </select>
+
+            <button id="generate">
+                Generate
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- Main content -->
+    <main>
+
+        <!-- Editor -->
+        <section class="panel">
+
+            <div class="panel-header">
+                <span>Code</span>
+            </div>
+
+            <textarea
+                id="codeInput"
+                placeholder="Paste or type your code here..."
+                spellcheck="false"
+            ></textarea>
+
+        </section>
+
+
+        <!-- Preview -->
+        <section class="panel">
+
+            <div class="panel-header">
+                <span>Preview</span>
+            </div>
+
+            <div id="preview">
+
+                <div class="empty-state">
+                    <p>Your formatted code will appear here.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="renderer.js"></script>
+
+</body>
+
+</html>
