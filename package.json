@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "Code capture and formatting tool for lecture notes",
   "main": "main.js",
- "scripts": {
-  "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron . --dev\"",
-  "build": "vite build",
-  "start": "electron .",
-  "dist": "npm run build && electron-builder --win"
-},
+  "scripts": {
+    "dev": "concurrently -k \"vite\" \"wait-on http://127.0.0.1:5173 && electron . --dev\"",
+    "build": "vite build",
+    "start": "electron .",
+    "dist": "npm run build && electron-builder --win",
+    "preview": "vite preview --host 0.0.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +20,7 @@
     "electron": "^37.0.0",
     "electron-builder": "^26.15.3",
     "vite": "^8.2.1",
+    "vite-plugin-pwa": "^1.3.0",
     "wait-on": "^9.1.0"
   },
   "dependencies": {
@@ -47,28 +49,27 @@
     "undici": "^7.29.0",
     "undici-types": "^7.18.2"
   },
-
   "build": {
-  "appId": "com.lecturecode.app",
-  "productName": "LectureCode",
-  "asar": true,
-  "directories": {
-    "output": "release"
-  },
-  "files": [
-    "dist/**/*",
-    "main.js",
-    "preload.js",
-    "package.json"
-  ],
-  "win": {
-    "target": "nsis"
-  },
-  "nsis": {
-    "oneClick": false,
-    "allowToChangeInstallationDirectory": true,
-    "createDesktopShortcut": true,
-    "createStartMenuShortcut": true
+    "appId": "com.lecturecode.app",
+    "productName": "LectureCode",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "preload.js",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
-}
 }
