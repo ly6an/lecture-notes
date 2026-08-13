@@ -152,7 +152,7 @@ select:focus {
 
 .code-card {
     width: 100%;
-    min-height: 260px;
+    min-height: 0px;
     overflow: hidden;
     border: 1px solid #343946;
     border-radius: 0px;
@@ -162,42 +162,19 @@ select:focus {
 }
 
 .code-card-header {
-    height: 48px;
-    padding: 0 17px;
+    height: 34px;
+    padding: 0 14px;
     border-bottom: 1px solid #252a34;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     color: #8b949e;
-    font-size: 13px;
-}
-
-.window-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.window-buttons span {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.red {
-    background: #ff5f57;
-}
-
-.yellow {
-    background: #febc2e;
-}
-
-.green {
-    background: #28c840;
+    font-size: 12px;
 }
 
 pre {
     margin: 0;
-    padding: 24px;
+    padding: 18px 24px;
     overflow: auto;
 }
 
@@ -229,13 +206,13 @@ code {
 }
 
 #previewCode {
-    line-height: 1.35;
+    line-height: 1;
 }
 
 #previewCode .line {
     display: block;
     min-height: 0;
-    line-height: 1.35;
+    line-height: 1;
 }
 
 .preview-line-number {
