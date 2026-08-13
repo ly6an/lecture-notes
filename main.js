@@ -1,5 +1,3 @@
-const isDevelopment = !app.isPackaged;
-
 const {
     app,
     BrowserWindow,
@@ -9,6 +7,7 @@ const {
 } = require("electron");
 
 const path = require("path");
+
 
 let mainWindow;
 
@@ -26,14 +25,16 @@ function createWindow() {
         }
     });
 
-    if (isDevelopment) {
-        mainWindow.loadFile(
-        path.join(__dirname, "src", "index.html")
-    );
+    // For now, always load the src version
+    const isDev = process.argv.includes("--dev");
+
+    if (isDev) {
+        mainWindow.loadURL("http://127.0.0.1:5173");
     } else {
         mainWindow.loadFile(
-        path.join(__dirname, "src", "index.html")
-    );}
+        path.join(__dirname, "dist", "index.html")
+    );
+    }
 }
 
 ipcMain.handle("clipboard:copy-image", (event, dataUrl) => {
@@ -54,7 +55,6 @@ ipcMain.handle("clipboard:copy-image", (event, dataUrl) => {
 
     return true;
 });
-
 
 app.whenReady().then(() => {
     createWindow();

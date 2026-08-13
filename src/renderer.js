@@ -1,10 +1,6 @@
 import { toPng } from "html-to-image";
 import { createWorker, PSM } from "tesseract.js";
 
-import { basicSetup } from "codemirror";
-import { Compartment, EditorState } from "@codemirror/state";
-import { EditorView, keymap } from "@codemirror/view";
-import { indentWithTab } from "@codemirror/commands";
 import { codeToHtml } from "shiki";
 
 import { javascript } from "@codemirror/lang-javascript";
@@ -14,154 +10,32 @@ import { cpp } from "@codemirror/lang-cpp";
 import { html } from "@codemirror/lang-html";
 import { css } from "@codemirror/lang-css";
 import { sql } from "@codemirror/lang-sql";
+import { languages } from "./renderer/language.js";
+import { ui } from "./renderer/ui.js";
+import {
+    createEditor,
+    setEditorLanguage
+} from "./renderer/editor.js";
+import {
+    removeScannedLineNumbers,
+    detectProgrammingLanguage
+} from "./renderer/utils/languageDetection.js";
 
-const editorElement = document.getElementById("editor");
-const generateButton = document.getElementById("generateButton");
-const previewCode = document.getElementById("previewCode");
-const previewStatus = document.getElementById("previewStatus");
-const languageSelect = document.getElementById("languageSelect");
-const languageLabel = document.getElementById("languageLabel");
-const codeCard = document.getElementById("codeCard");
-const copyButton = document.getElementById("copyButton");
-const downloadButton = document.getElementById("downloadButton");
-const scanButton = document.getElementById("scanButton");
-const imageInput = document.getElementById("imageInput");
+const {
+    editorElement,
+    generateButton,
+    previewCode,
+    previewStatus,
+    languageSelect,
+    languageLabel,
+    codeCard,
+    copyButton,
+    downloadButton,
+    scanButton,
+    imageInput
+} = ui;
 
-const languageCompartment = new Compartment();
-
-const languages = {
-    javascript: {
-        name: "JavaScript",
-        extension: javascript()
-    },
-
-    python: {
-        name: "Python",
-        extension: python()
-    },
-
-    java: {
-        name: "Java",
-        extension: java()
-    },
-
-    cpp: {
-        name: "C++",
-        extension: cpp()
-    },
-
-    html: {
-        name: "HTML",
-        extension: html()
-    },
-
-    css: {
-        name: "CSS",
-        extension: css()
-    },
-
-    sql: {
-        name: "SQL",
-        extension: sql()
-    }
-};
-
-const examples = {
-    javascript: `function hello(name) {
-    console.log("Hello, " + name);
-}
-
-hello("Lecture");`,
-
-    python: `def hello(name):
-    print("Hello, " + name)
-
-hello("Lecture")`,
-
-    java: `public class Main {
-    public static void main(String[] args) {
-        System.out.println("Hello, Lecture");
-    }
-}`,
-
-    cpp: `#include <iostream>
-using namespace std;
-
-int main() {
-    cout << "Hello, Lecture" << endl;
-    return 0;
-}`,
-
-    html: `<main>
-    <h1>Hello, Lecture</h1>
-</main>`,
-
-    css: `body {
-    background: #111318;
-    color: white;
-}`,
-
-    sql: `SELECT name, course
-FROM students
-WHERE course = 'Computer Science';`
-};
-
-const editorTheme = EditorView.theme(
-    {
-        "&": {
-            height: "100%",
-            color: "#e6edf3",
-            backgroundColor: "#0f1117"
-        },
-
-        ".cm-content": {
-            padding: "18px 0",
-            fontFamily: '"Cascadia Code", Consolas, monospace',
-            fontSize: "15px"
-        },
-
-        ".cm-gutters": {
-            color: "#596273",
-            backgroundColor: "#0f1117",
-            border: "none"
-        },
-
-        ".cm-activeLine": {
-            backgroundColor: "#171b24"
-        },
-
-        ".cm-activeLineGutter": {
-            backgroundColor: "#171b24"
-        },
-
-        ".cm-cursor": {
-            borderLeftColor: "#ffffff"
-        },
-
-        "&.cm-focused .cm-selectionBackground, ::selection": {
-            backgroundColor: "#31446d"
-        }
-    },
-    {
-        dark: true
-    }
-);
-
-const startState = EditorState.create({
-    doc: examples.javascript,
-
-    extensions: [
-        basicSetup,
-        keymap.of([indentWithTab]),
-        languageCompartment.of(languages.javascript.extension),
-        editorTheme
-    ]
-});
-
-const editor = new EditorView({
-    state: startState,
-    parent: editorElement
-});
+const editor = createEditor(editorElement);
 
 async function generatePreview() {
     const code = editor.state.doc.toString();
@@ -223,9 +97,7 @@ function changeLanguage() {
     const selectedLanguage = languageSelect.value;
     const language = languages[selectedLanguage];
 
-    editor.dispatch({
-        effects: languageCompartment.reconfigure(language.extension)
-    });
+    setEditorLanguage(editor, selectedLanguage);
 
     languageLabel.textContent = language.name;
     previewStatus.textContent = `${language.name} selected`;
@@ -321,103 +193,103 @@ function getOcrWorker() {
     return ocrWorkerPromise;
 }
 
-function removeScannedLineNumbers(text) {
-    return text
-        .split("\n")
-        .map((line) => {
-            // A line containing only a line number
-            if (/^\s*\d+\s*$/.test(line)) {
-                return "";
-            }
+// function removeScannedLineNumbers(text) {
+//     return text
+//         .split("\n")
+//         .map((line) => {
+//             // A line containing only a line number
+//             if (/^\s*\d+\s*$/.test(line)) {
+//                 return "";
+//             }
 
-            // Examples removed:
-            // "12 const value = 5;"
-            // "12 | const value = 5;"
-            // "12: const value = 5;"
-            // "12. const value = 5;"
-            return line.replace(
-                /^\s*\d+(?:(?:\s*[|:.]\s?)|[ \t])/,
-                ""
-            );
-        })
-        .join("\n");
-}
+//             // Examples removed:
+//             // "12 const value = 5;"
+//             // "12 | const value = 5;"
+//             // "12: const value = 5;"
+//             // "12. const value = 5;"
+//             return line.replace(
+//                 /^\s*\d+(?:(?:\s*[|:.]\s?)|[ \t])/,
+//                 ""
+//             );
+//         })
+//         .join("\n");
+// }
 
-function detectProgrammingLanguage(code) {
-    const scores = {
-        javascript: 0,
-        python: 0,
-        java: 0,
-        cpp: 0,
-        html: 0,
-        css: 0,
-        sql: 0
-    };
+// function detectProgrammingLanguage(code) {
+//     const scores = {
+//         javascript: 0,
+//         python: 0,
+//         java: 0,
+//         cpp: 0,
+//         html: 0,
+//         css: 0,
+//         sql: 0
+//     };
 
-    const tests = {
-        javascript: [
-            [/\b(const|let|var)\b/g, 2],
-            [/\bfunction\s+\w+\s*\(/g, 3],
-            [/console\.log\s*\(/g, 4],
-            [/=>/g, 2]
-        ],
+//     const tests = {
+//         javascript: [
+//             [/\b(const|let|var)\b/g, 2],
+//             [/\bfunction\s+\w+\s*\(/g, 3],
+//             [/console\.log\s*\(/g, 4],
+//             [/=>/g, 2]
+//         ],
 
-        python: [
-            [/\bdef\s+\w+\s*\(/g, 4],
-            [/\b(print|input)\s*\(/g, 3],
-            [/\b(import|from)\s+\w+/g, 2],
-            [/^\s*(if|for|while|def|class).+:\s*$/gm, 3]
-        ],
+//         python: [
+//             [/\bdef\s+\w+\s*\(/g, 4],
+//             [/\b(print|input)\s*\(/g, 3],
+//             [/\b(import|from)\s+\w+/g, 2],
+//             [/^\s*(if|for|while|def|class).+:\s*$/gm, 3]
+//         ],
 
-        java: [
-            [/\bpublic\s+class\b/g, 5],
-            [/\bpublic\s+static\s+void\s+main\b/g, 6],
-            [/System\.out\.print/g, 5],
-            [/\b(String|boolean|ArrayList)\b/g, 2]
-        ],
+//         java: [
+//             [/\bpublic\s+class\b/g, 5],
+//             [/\bpublic\s+static\s+void\s+main\b/g, 6],
+//             [/System\.out\.print/g, 5],
+//             [/\b(String|boolean|ArrayList)\b/g, 2]
+//         ],
 
-        cpp: [
-            [/#include\s*</g, 6],
-            [/\bstd::/g, 4],
-            [/\b(cout|cin)\s*<</g, 5],
-            [/\busing\s+namespace\s+std/g, 5]
-        ],
+//         cpp: [
+//             [/#include\s*</g, 6],
+//             [/\bstd::/g, 4],
+//             [/\b(cout|cin)\s*<</g, 5],
+//             [/\busing\s+namespace\s+std/g, 5]
+//         ],
 
-        html: [
-            [/<!DOCTYPE\s+html>/gi, 8],
-            [/<(html|head|body|main|div|span|h1|p)\b/gi, 4],
-            [/<\/\w+>/g, 2]
-        ],
+//         html: [
+//             [/<!DOCTYPE\s+html>/gi, 8],
+//             [/<(html|head|body|main|div|span|h1|p)\b/gi, 4],
+//             [/<\/\w+>/g, 2]
+//         ],
 
-        css: [
-            [/[.#][\w-]+\s*\{/g, 4],
-            [/\b(color|background|display|margin|padding)\s*:/g, 3],
-            [/@media\b/g, 4]
-        ],
+//         css: [
+//             [/[.#][\w-]+\s*\{/g, 4],
+//             [/\b(color|background|display|margin|padding)\s*:/g, 3],
+//             [/@media\b/g, 4]
+//         ],
 
-        sql: [
-            [/\bSELECT\b/gi, 5],
-            [/\bFROM\b/gi, 4],
-            [/\bWHERE\b/gi, 4],
-            [/\b(INSERT INTO|UPDATE|CREATE TABLE|DELETE FROM)\b/gi, 6]
-        ]
-    };
+//         sql: [
+//             [/\bSELECT\b/gi, 5],
+//             [/\bFROM\b/gi, 4],
+//             [/\bWHERE\b/gi, 4],
+//             [/\b(INSERT INTO|UPDATE|CREATE TABLE|DELETE FROM)\b/gi, 6]
+//         ]
+//     };
 
-    for (const [language, languageTests] of Object.entries(tests)) {
-        for (const [pattern, points] of languageTests) {
-            const matches = code.match(pattern);
+//     for (const [language, languageTests] of Object.entries(tests)) {
+//         for (const [pattern, points] of languageTests) {
+//             const matches = code.match(pattern);
 
-            if (matches) {
-                scores[language] += matches.length * points;
-            }
-        }
-    }
+//             if (matches) {
+//                 scores[language] += matches.length * points;
+//             }
+//         }
+//     }
 
-    const [detectedLanguage, score] = Object.entries(scores)
-        .sort((first, second) => second[1] - first[1])[0];
+//     const [detectedLanguage, score] = Object.entries(scores)
+//         .sort((first, second) => second[1] - first[1])[0];
 
-    return score > 0 ? detectedLanguage : null;
-}
+//     return score > 0 ? detectedLanguage : null;
+// }
 
 async function scanScreenshot(file) {
     scanButton.disabled = true;
